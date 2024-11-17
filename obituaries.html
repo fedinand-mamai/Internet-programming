@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obituaries | Memorial Platform</title>
+    <meta name="description" content="Browse and share obituaries of loved ones. A place to honor and remember those who have passed.">
+    <meta name="keywords" content="obituaries, memorials, remembrance, death notices, tributes">
+    <link rel="canonical" href="https://yourwebsite.com/obituaries">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .obituary-card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .obituary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .obituary-card h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .obituary-card p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn, .share-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background-color: #218838;
+        }
+
+        .share-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        .pagination button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination button:disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+        .share-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .share-dialog-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 300px;
+        }
+
+        .share-dialog-content button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .share-dialog-content button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Obituaries List</h1>
+        <div id="obituaries-list">
+            <!-- Dynamic Obituary Cards will be inserted here -->
+        </div>
+        
+        <div class="pagination" id="pagination"></div>
+        
+        <div id="loading" style="display: none;">Loading...</div>
+        <div id="error-message" style="display: none; color: red;">Error loading obituaries. Please try again later.</div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+
+        function loadObituaries(page = 1) {
+            currentPage = page;
+            const obituariesList = document.getElementById('obituaries-list');
+            const paginationDiv = document.getElementById('pagination');
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error-message');
+
+            loadingDiv.style.display = 'block';
+            obituariesList.innerHTML = '';
+            errorDiv.style.display = 'none';
+
+            // Simulate API call (replace with your actual API request)
+            setTimeout(() => {
+                try {
+                    const data = {
+                        data: {
+                            obituaries: [
+                                { id: 1, name: 'John Doe', date_of_birth: '01-01-1980', date_of_death: '10-10-2023', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.', author: 'Jane Doe', submission_date: '10-10-2023' },
+                                { id: 2, name: 'Jane Smith', date_of_birth: '12-12-1975', date_of_death: '05-11-2023', content: 'Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius.', author: 'John Smith', submission_date: '11-11-2023' }
+                            ],
+                            pagination: {
+                                currentPage: page,
+                                totalPages: 3
+                            }
+                        }
+                    };
+
+                    const obituaries = data.data.obituaries;
+                    obituaries.forEach(obituary => {
+                        const card = document.createElement('div');
+                        card.className = 'obituary-card';
+                        card.innerHTML = `
+                            <h2>${escapeHtml(obituary.name)}</h2>
+                            <p><strong>Date of Birth:</strong> ${obituary.date_of_birth}</p>
+                            <p><strong>Date of Death:</strong> ${obituary.date_of_death}</p>
+                            <p><strong>Submitted by:</strong> ${escapeHtml(obituary.author)}</p>
+                            <p>${escapeHtml(obituary.content.substring(0, 100))}...</p>
+                            <div class="action-buttons">
+                                <button onclick="viewObituary('${obituary.id}')" class="view-btn">View</button>
+                                <button onclick="shareObituary('${obituary.id}', '${escapeHtml(obituary.name)}')" class="share-btn">Share</button>
+                            </div>
+                        `;
+                        obituariesList.appendChild(card);
+                    });
+
+                    updatePagination(data.data.pagination);
+                } catch (error) {
+                    console.error('Error:', error);
+                    errorDiv.style.display = 'block';
+                } finally {
+                    loadingDiv.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function updatePagination(pagination) {
+            const { currentPage, totalPages } = pagination;
+            let paginationHtml = '';
+
+            if (totalPages > 1) {
+                paginationHtml = `
+                    <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>First</button>
+                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    <span>Page ${currentPage} of ${totalPages}</span>
+                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                    <button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>
+                `;
+            }
+
+            paginationDiv.innerHTML = paginationHtml;
+        }
+
+        function changePage(page) {
+            loadObituaries(page);
+        }
+
+        function viewObituary(id) {
+            window.location.href = `/obituary/${id}`;
+        }
+
+        function shareObituary(id, name) {
+            const url = `${window.location.origin}/obituary/${id}`;
+            const title = `In Memory of ${name}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: `View the obituary of ${name}`,
+                    url: url
+                }).catch(console.error);
+            } else {
+                const shareDialog = document.createElement('div');
+                shareDialog.className = 'share-dialog';
+                shareDialog.innerHTML = `
+                    <div class="share-dialog-content">
+                        <h3>Share Obituary</h3>
+                        <button onclick="shareToFacebook('${url}')" class="facebook-btn">
+                            Share on Facebook
+                        </button>
+                        <button onclick="shareToTwitter('${url}')" class="twitter-btn">
+                            Share on Twitter
