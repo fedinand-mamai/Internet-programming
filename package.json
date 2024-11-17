@@ -1,0 +1,58 @@
+{
+  "name": "obituary-platform",
+  "version": "1.0.1",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "build": "webpack --config webpack.config.js",
+    "test": "mocha --reporter spec"
+  },
+  "keywords": [
+    "obituaries",
+    "web-app",
+    "nodejs",
+    "express",
+    "seo",
+    "social-media"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "description": "A platform for managing and displaying obituaries with SEO and social media optimization features.",
+  "dependencies": {
+    "axios": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.17.3",
+    "express-validator": "^7.0.0",
+    "helmet": "^4.5.0",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^6.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "mysql2": "^3.11.0",
+    "node-fetch": "^3.0.0",
+    "sequelize": "^6.35.1",
+    "sqlite3": "^5.0.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "nodemon": "^2.0.15",
+    "mocha": "^10.0.0",
+    "chai": "^4.3.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
+  }
